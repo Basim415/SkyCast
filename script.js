@@ -1,5 +1,4 @@
 function getWeather() {
-    const apiKey = '8d267db21bd455908d9faa2d36106a2a';
     const city = document.getElementById('city').value;
 
     if (!city) {
@@ -31,6 +30,11 @@ function getWeather() {
         });
 }
 
+
+function kelvinToFahrenheit(kelvin) {
+    return Math.round((kelvin - 273.15) * 9/5 + 32);
+}
+
 function displayWeather(data) {
     const tempDivInfo = document.getElementById('temp-div');
     const weatherInfoDiv = document.getElementById('weather-info');
@@ -42,26 +46,61 @@ function displayWeather(data) {
     hourlyForecastDiv.innerHTML = '';
     tempDivInfo.innerHTML = '';
 
-    if (data.cod == '404') {
+    if (data.cod === 404 || data.cod === "404") {
         weatherInfoDiv.innerHTML = `<p>${data.message}</p>`;
-    } else {
-        const cityName = data.name;
-        const temperature = Math.round((data.main.temp - 273.15) * 9/5 + 32);
-        const description = data.weather[0].description;
-        const iconCode = data.weather[0].icon;
-        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;  
+        return;
+    }
 
-        const temperatureHTML = `<p>${temperature}°F</p>`;
-        const weatherHTML = `
-            <p>${cityName}</p>
-            <p>${description}</p>
+    const cityName = data.name;
+    const temperature = kelvinToFahrenheit(data.main.temp);
+    const description = data.weather[0].description;
+    const iconCode = data.weather[0].icon;
+    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;  
+
+    const temperatureHTML = `<p>${temperature}°F</p>`;
+    const weatherHTML = `
+        <p>${cityName}</p>
+        <p>${description}</p>
+    `;
+
+    tempDivInfo.innerHTML = temperatureHTML;
+    weatherInfoDiv.innerHTML = weatherHTML;
+    weatherIcon.src = iconUrl;
+    weatherIcon.alt = description;
+
+    showImage();
+}
+
+function displayHourlyForecast(hourlyData) {
+    const hourlyForecast = document.getElementById('hourly-forecast');
+    const next24Hours = hourlyData.slice(0, 8); // still only 8 × 3hr blocks
+
+    hourlyForecast.innerHTML = ''; // Clear previous content
+
+    next24Hours.forEach(item => {
+        const dateTime = new Date(item.dt * 1000);
+        let hour = dateTime.getHours();
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12 || 12;
+
+        const temperature = kelvinToFahrenheit(item.main.temp);
+        const iconCode = item.weather[0].icon;
+        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;  
+
+        const hourlyItemHtml = `
+            <div class="hourly-item">
+                <span>${hour} ${ampm}</span>
+                <img src="${iconUrl}" alt="Hourly Weather Icon">
+                <span>${temperature}°F</span>
+            </div>
         `;
 
-        tempDivInfo.innerHTML = temperatureHTML;
-        weatherInfoDiv.innerHTML = weatherHTML;
-        weatherIcon.src = iconUrl;
-        weatherIcon.alt = description;
+        hourlyForecast.innerHTML += hourlyItemHtml;
+    });
+}
 
-        showImage();
-    }
+
+function showImage() {
+    const weatherIcon = document.getElementById('weather-icon');
+    weatherIcon.style.display = 'block';
 }
