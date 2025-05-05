@@ -7,7 +7,8 @@ SkyCast is a simple and beautiful weather forecast web application built with **
 ## 🚀 Features
 
 - 🔍 Search for weather by city
-- 🌡️ Displays temperature in Fahrenheit
+- 🌎 Optional country selector to improve location accuracy (e.g., Birmingham, US vs Birmingham, GB)
+- 🌡️ Displays temperature in Fahrenheit or Celsius (toggle switch)
 - 📸 Weather condition icons
 - ⏱️ Shows upcoming hourly forecast (3-hour intervals from OpenWeatherMap)
 - ✨ Glassmorphism UI design
@@ -32,15 +33,14 @@ SkyCast is a simple and beautiful weather forecast web application built with **
         const apiKey = 'YOUR_API_KEY_HERE';
 4. **Open index.html in your browser and start using the app locally.**
 
+---
 
-
-📝 Note
+📝 Note  
 This project is for learning and showcasing frontend skills. It uses the free tier of the OpenWeatherMap API, which provides forecast data in 3-hour intervals.
 
-📄 License
+📄 License  
 This project is open source and free to use for educational purposes.
 
-
-👨‍💻 Author
-Created by Basim Shahzad
-GitHub: @Basim415
+👨‍💻 Author  
+Created by Basim Shahzad  
+GitHub: [@Basim415](https://github.com/Basim415)
