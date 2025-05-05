@@ -1,15 +1,28 @@
 let useCelsius = false;
 
+function toggleStateDropdown() {
+    const country = document.getElementById('country').value;
+    const stateDropdown = document.getElementById('state');
+    stateDropdown.style.display = country === "US" ? "inline-block" : "none";
+}
+
 function getWeather() {
     const city = document.getElementById('city').value.trim();
     const country = document.getElementById('country').value.trim();
+    const state = document.getElementById('state').value.trim();
 
     if (!/^[a-zA-Z\s]+$/.test(city)) {
         alert("Please enter a valid city name.");
         return;
     }
 
-    const query = country ? `${city},${country}` : city;
+    let query = city;
+    if (country === "US" && state) {
+        query = `${city},${state},${country}`;
+    } else if (country) {
+        query = `${city},${country}`;
+    }
+
     document.getElementById('weather-info').innerHTML = '<p>Loading...</p>';
 
     const units = useCelsius ? "metric" : "imperial";
