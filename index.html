@@ -9,8 +9,28 @@
 <body>
     <div id="weather-container">
         <h2>SkyCast</h2>
+        
         <input type="text" id="city" placeholder="Enter City">
+
+        <select id="country">
+            <option value="">Select Country</option>
+            <option value="US">United States</option>
+            <option value="GB">United Kingdom</option>
+            <option value="FR">France</option>
+            <option value="CA">Canada</option>
+            <option value="IN">India</option>
+            <option value="AU">Australia</option>
+            <option value="PK">Pakistan</option>
+            <option value="DE">Germany</option>
+            <option value="JP">Japan</option>
+            <option value="BR">Brazil</option>
+        </select>
+
         <button onclick="getWeather()">Search</button>
+
+        <label>
+            <input type="checkbox" id="unit-toggle"> Show Celsius
+        </label>
 
         <img id="weather-icon" alt="Weather Icon">
 
@@ -19,6 +39,7 @@
         <div id="hourly-forecast"></div>
     </div>
 
+    <script src="./config.js"></script>
     <script src="./script.js"></script>
 </body>
 </html>
