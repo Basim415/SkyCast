@@ -27,9 +27,10 @@ SkyCast is a simple and beautiful weather forecast web application built with **
 ## 🔧 Setup Instructions
 
 1. **Clone the repository:**
-2. **Inside the project directory, create a new file named config.js and add your API key:**
+2. Visit https://openweathermap.org/city/2643743 and create an API key
+3. **Inside the project directory, create a new file named config.js and add your API key:**
         const apiKey = 'YOUR_API_KEY_HERE';
-3. **Open index.html in your browser and start using the app locally.**
+4. **Open index.html in your browser and start using the app locally.**
 
 
 
