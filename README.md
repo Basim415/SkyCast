@@ -8,6 +8,7 @@ SkyCast is a simple and beautiful weather forecast web application built with **
 
 - 🔍 Search for weather by city
 - 🌎 Optional country selector to improve location accuracy (e.g., Birmingham, US vs Birmingham, GB)
+- 🏛️ U.S. state selector for precise city matching (e.g., Oakland, CA vs Oakland, FL)
 - 🌡️ Displays temperature in Fahrenheit or Celsius (toggle switch)
 - 📸 Weather condition icons
 - ⏱️ Shows upcoming hourly forecast (3-hour intervals from OpenWeatherMap)
