@@ -1,13 +1,20 @@
-function getWeather() {
-    const city = document.getElementById('city').value;
+let useCelsius = false;
 
-    if (!city) {
-        alert('Please enter a city');
+function getWeather() {
+    const city = document.getElementById('city').value.trim();
+    const country = document.getElementById('country').value.trim();
+
+    if (!/^[a-zA-Z\s]+$/.test(city)) {
+        alert("Please enter a valid city name.");
         return;
     }
 
-    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
-    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
+    const query = country ? `${city},${country}` : city;
+    document.getElementById('weather-info').innerHTML = '<p>Loading...</p>';
+
+    const units = useCelsius ? "metric" : "imperial";
+    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${apiKey}&units=${units}`;
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=${apiKey}&units=${units}`;
 
     fetch(currentWeatherUrl)
         .then(response => response.json())
@@ -30,18 +37,12 @@ function getWeather() {
         });
 }
 
-
-function kelvinToFahrenheit(kelvin) {
-    return Math.round((kelvin - 273.15) * 9/5 + 32);
-}
-
 function displayWeather(data) {
     const tempDivInfo = document.getElementById('temp-div');
     const weatherInfoDiv = document.getElementById('weather-info');
     const weatherIcon = document.getElementById('weather-icon');
     const hourlyForecastDiv = document.getElementById('hourly-forecast');
 
-    // Clear previous content
     weatherInfoDiv.innerHTML = '';
     hourlyForecastDiv.innerHTML = '';
     tempDivInfo.innerHTML = '';
@@ -51,31 +52,32 @@ function displayWeather(data) {
         return;
     }
 
-    const cityName = data.name;
-    const temperature = kelvinToFahrenheit(data.main.temp);
+    const unitSymbol = useCelsius ? "°C" : "°F";
+    const cityName = `${data.name}, ${data.sys.country}`;
+    const temperature = Math.round(data.main.temp);
+    const feelsLike = Math.round(data.main.feels_like);
+    const humidity = data.main.humidity;
     const description = data.weather[0].description;
     const iconCode = data.weather[0].icon;
-    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;  
+    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
 
-    const temperatureHTML = `<p>${temperature}°F</p>`;
-    const weatherHTML = `
+    tempDivInfo.innerHTML = `<p>${temperature}${unitSymbol}</p>`;
+    weatherInfoDiv.innerHTML = `
         <p>${cityName}</p>
         <p>${description}</p>
+        <p>Feels like: ${feelsLike}${unitSymbol}</p>
+        <p>Humidity: ${humidity}%</p>
     `;
-
-    tempDivInfo.innerHTML = temperatureHTML;
-    weatherInfoDiv.innerHTML = weatherHTML;
     weatherIcon.src = iconUrl;
     weatherIcon.alt = description;
-
-    showImage();
+    weatherIcon.style.display = 'block';
 }
 
 function displayHourlyForecast(hourlyData) {
     const hourlyForecast = document.getElementById('hourly-forecast');
-    const next24Hours = hourlyData.slice(0, 8); // still only 8 × 3hr blocks
+    const next24Hours = hourlyData.slice(0, 8);
 
-    hourlyForecast.innerHTML = ''; // Clear previous content
+    hourlyForecast.innerHTML = '';
 
     next24Hours.forEach(item => {
         const dateTime = new Date(item.dt * 1000);
@@ -83,15 +85,15 @@ function displayHourlyForecast(hourlyData) {
         const ampm = hour >= 12 ? 'PM' : 'AM';
         hour = hour % 12 || 12;
 
-        const temperature = kelvinToFahrenheit(item.main.temp);
+        const temperature = Math.round(item.main.temp);
         const iconCode = item.weather[0].icon;
-        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;  
+        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
 
         const hourlyItemHtml = `
             <div class="hourly-item">
                 <span>${hour} ${ampm}</span>
                 <img src="${iconUrl}" alt="Hourly Weather Icon">
-                <span>${temperature}°F</span>
+                <span>${temperature}${useCelsius ? "°C" : "°F"}</span>
             </div>
         `;
 
@@ -99,8 +101,13 @@ function displayHourlyForecast(hourlyData) {
     });
 }
 
+document.getElementById("city").addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        getWeather();
+    }
+});
 
-function showImage() {
-    const weatherIcon = document.getElementById('weather-icon');
-    weatherIcon.style.display = 'block';
-}
+document.getElementById("unit-toggle").addEventListener("change", function () {
+    useCelsius = this.checked;
+});
